@@ -1,0 +1,41 @@
+// verilogA for SA rms noise //
+module noise_rms (sa_out, clk, vrefp, vrefn, vcount_1, vcount_0);
+    input  sa_out, clk;
+    output vrefp , vrefn, vcount_1, vcount_0;
+    electrical sa_out, clk, vrefp, vrefn, vcount_1, vcount_0;
+    parameter real VDD  = 1.2;
+    parameter real thr  = VDD/2;
+    parameter real vcom = 0.8;
+    real dv = 0, count_1 = 0, count_0 = 0, count_all = 0, ratio = 0;
+    analog begin
+    
+    V(vrefp)    <+ vcom + dv;
+    V(vrefn)    <+ vcom - dv;
+    V(vcount_1) <+ count_1;
+    V(vcount_0) <+ count_0;
+    count_all = count_1 + count_0;
+    
+    @(cross(V(clk) > thr)) begin
+        if (V(sa_out) > thr)
+            count_1 = count_1 + 1;
+        else
+            count_0 = count_0 + 1;
+    end
+    if (count_all > 0)
+        ratio = count_1/count_all;
+    
+    if (count_all > 100) begin
+        count_1 = 0;
+        count_0 = 0;
+        if (ratio > 0.83)
+            dv = dv - 0.05e-3;
+        else
+            dv = dv + 0.05e-3;
+    end    
+    
+    end
+endmodule
+ .hdl '/home/memory/project/9l76/9l76a34/hspice/SA_noise/noise_rms.va'
+ xnoise_rms sa_out clk vrefp vrefn vcount_1 vcount_0 noise_rms
+.tr 0.01p 5000n
+.trannoise method=mc samples=1 fmin=1 fmax=100g scale=1
