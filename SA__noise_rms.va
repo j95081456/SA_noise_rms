@@ -35,7 +35,7 @@ module noise_rms (sa_out, clk, vrefp, vrefn, vcount_1, vcount_0);
     
     end
 endmodule
- .hdl '/home/memory/project/9l76/9l76a34/hspice/SA_noise/noise_rms.va'
+ .hdl 'xxx/xxx/hspice/SA_noise/noise_rms.va'
  xnoise_rms sa_out clk vrefp vrefn vcount_1 vcount_0 noise_rms
 .tr 0.01p 5000n
 .trannoise method=mc samples=1 fmin=1 fmax=100g scale=1
