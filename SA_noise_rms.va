@@ -15,7 +15,7 @@ module noise_rms (sa_out, clk, vrefp, vrefn, vcount_1, vcount_0);
     V(vcount_0) <+ count_0;
     count_all = count_1 + count_0;
     
-    @(cross(V(clk) > thr)) begin
+    @(cross(V(clk) > thr)) begin // @(cross(V(clk) - thr, +1)) is better //
         if (V(sa_out) > thr)
             count_1 = count_1 + 1;
         else
